@@ -6,7 +6,7 @@ export const DataContext = createContext(null);
 export const DataProvider = ({ children }) => {
     const [data, setData] = useState()
     const [categories, setCategories] = useState([])
-    const ELECTRONICS_CATEGORY_ID = 22; // Usually electronics is category ID 2 in this API
+    const ELECTRONICS_CATEGORY_ID = 2; // Usually electronics is category ID 2 in this API
 
     // fetching electronics category products from api
     const fetchAllProducts = async () => {
