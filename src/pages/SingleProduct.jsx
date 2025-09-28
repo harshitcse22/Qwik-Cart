@@ -5,24 +5,39 @@ import Loading from "../assets/Loading4.webm"
 import Breadcrums from '../components/Breadcrums';
 import { IoCartOutline } from 'react-icons/io5';
 import { useCart } from '../context/CartContext';
+import { getData } from '../context/DataContext';
  
 
 const SingleProduct = () => {
     const params = useParams()
-    const [SingleProduct, setSingleProduct] = useState("")
+    const [SingleProduct, setSingleProduct] = useState(null)
     const {addToCart} = useCart()
+    const { data } = getData()
 
     const getSingleProduct = async () => {
         try {
-            const res = await axios.get(`https://fakestoreapi.com/products/${params.id}`)
-            const product = {
-                ...res.data,
-                brand: res.data.title.split(' ')[0],
-                model: res.data.title.split(' ').slice(1).join(' '),
-                discount: 10,
-                images: [res.data.image],
-            };
-            setSingleProduct(product)
+            // First check if product exists in local data
+            const localProduct = data.find(product => product.id == params.id);
+            
+            if (localProduct) {
+                const product = {
+                    ...localProduct,
+                    model: localProduct.title.split(' ').slice(1).join(' ') || 'Standard Model',
+                    discount: localProduct.discount || 10,
+                };
+                setSingleProduct(product)
+            } else {
+                // Fallback to API call for other products
+                const res = await axios.get(`https://fakestoreapi.com/products/${params.id}`)
+                const product = {
+                    ...res.data,
+                    brand: res.data.title.split(' ')[0],
+                    model: res.data.title.split(' ').slice(1).join(' '),
+                    discount: 10,
+                    images: [res.data.image],
+                };
+                setSingleProduct(product)
+            }
         } catch (error) {
             console.error('Single Product API Error:', error);
             setSingleProduct(null)
@@ -30,10 +45,12 @@ const SingleProduct = () => {
     }
 
     useEffect(() => {
-        getSingleProduct()
-    }, [])
+        if (data.length > 0) {
+            getSingleProduct()
+        }
+    }, [data, params.id])
 
-    const OriginalPrice = Math.round(SingleProduct.price + (SingleProduct.price * SingleProduct.discount / 100))
+    const OriginalPrice = SingleProduct ? Math.round(SingleProduct.price + (SingleProduct.price * (SingleProduct.discount || 10) / 100)) : 0
 
     return (
         <>

@@ -4,11 +4,12 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from 'react-slick';
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai';
+import { useNavigate } from 'react-router-dom';
 import Category from './Category';
 
 const Carousel = () => {
     const { data, fetchAllProducts } = getData()
-    console.log(data);
+    const navigate = useNavigate()
 
     useEffect(() => {
         let mounted = true;
@@ -61,7 +62,7 @@ const Carousel = () => {
                                     <h3 className='text-red-500 font-semibold font-sans text-sm'>Powering Your World with the Best in Electronics</h3>
                                     <h1 className='md:text-4xl text-xl font-bold uppercase line-clamp-2 md:line-clamp-3 md:w-[500px] text-white'>{item.title}</h1>
                                     <p className='md:w-[500px] line-clamp-3 text-gray-400 pr-7'>{item.description}</p>
-                                    <button className='bg-gradient-to-r from-red-500 to-purple-500 text-white px-3 py-2 rounded-md cursor-pointer mt-2'>Shop Now</button>
+                                    <button onClick={() => navigate(`/products/${item.id}`)} className='bg-gradient-to-r from-red-500 to-purple-500 hover:from-red-600 hover:to-purple-600 text-white px-4 py-2 rounded-md cursor-pointer mt-2 transition-all font-semibold'>Shop Now</button>
                                 </div>
                                 <div>
                                     <img src={item.image} alt={item.title} className='rounded-full w-[550px] hover:scale-105 transition-all shadow-2xl shadow-red-400'/>

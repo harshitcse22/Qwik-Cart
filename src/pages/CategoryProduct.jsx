@@ -4,22 +4,34 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Loading from "../assets/Loading4.webm"
 import { ChevronLeft } from 'lucide-react'
 import ProductListView from '../components/ProductListView'
+import { getData } from '../context/DataContext'
 
 const CategoryProduct = () => {
   const [searchData, setSearchData] = useState([])
   const params = useParams()
   const category = params.category
   const navigate = useNavigate()
+  const { data } = getData()
 
   const getFilterData = async ()=>{
     try {
-      const res = await axios.get(`https://fakestoreapi.com/products/category/${category}`)
-      const productsData = res.data.map(product => ({
-        ...product,
-        brand: product.title.split(' ')[0],
-        images: [product.image],
-      }));
-      setSearchData(productsData)
+      // Filter from existing data first (includes our electronics data)
+      const localFilteredData = data.filter(product => 
+        product.category.toLowerCase() === category.toLowerCase()
+      );
+      
+      if (localFilteredData.length > 0) {
+        setSearchData(localFilteredData)
+      } else {
+        // Fallback to API call for other categories
+        const res = await axios.get(`https://fakestoreapi.com/products/category/${category}`)
+        const productsData = res.data.map(product => ({
+          ...product,
+          brand: product.title.split(' ')[0],
+          images: [product.image],
+        }));
+        setSearchData(productsData)
+      }
     } catch (error) {
       console.error('Category API Error:', error);
       setSearchData([])
@@ -27,9 +39,11 @@ const CategoryProduct = () => {
   }
 
   useEffect(()=>{
-    getFilterData()
+    if (data.length > 0) {
+      getFilterData()
+    }
     window.scrollTo(0,0)
-  },[])
+  },[data, category])
   
   return (
     <div>
