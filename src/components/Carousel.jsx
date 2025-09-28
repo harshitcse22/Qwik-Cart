@@ -11,7 +11,13 @@ const Carousel = () => {
     console.log(data);
 
     useEffect(() => {
-        fetchAllProducts()
+        let mounted = true;
+        if (mounted) {
+            fetchAllProducts();
+        }
+        return () => {
+            mounted = false;
+        };
     }, [])
 
     const SamplePrevArrow = (props) => {

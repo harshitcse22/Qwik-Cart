@@ -14,20 +14,18 @@ const SingleProduct = () => {
 
     const getSingleProduct = async () => {
         try {
-            const res = await axios.get(`https://api.escuelajs.co/api/v1/products/${params.id}`)
-            // Transform the data to match existing structure
+            const res = await axios.get(`https://fakestoreapi.com/products/${params.id}`)
             const product = {
                 ...res.data,
-                image: res.data.images[0],
                 brand: res.data.title.split(' ')[0],
-                category: res.data.category.name,
                 model: res.data.title.split(' ').slice(1).join(' '),
-                discount: 10, // Setting a default discount since the new API doesn't have this
+                discount: 10,
+                images: [res.data.image],
             };
             setSingleProduct(product)
-            console.log(product);
         } catch (error) {
-            console.log(error);
+            console.error('Single Product API Error:', error);
+            setSingleProduct(null)
         }
     }
 

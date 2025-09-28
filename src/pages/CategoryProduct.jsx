@@ -13,13 +13,16 @@ const CategoryProduct = () => {
 
   const getFilterData = async ()=>{
     try {
-      const res = await axios.get(`https://fakestoreapi.in/api/products/category?type=${category}`)
-      const data = res.data.products
-      setSearchData(data)
-
+      const res = await axios.get(`https://fakestoreapi.com/products/category/${category}`)
+      const productsData = res.data.map(product => ({
+        ...product,
+        brand: product.title.split(' ')[0],
+        images: [product.image],
+      }));
+      setSearchData(productsData)
     } catch (error) {
-      console.log(error);
-      
+      console.error('Category API Error:', error);
+      setSearchData([])
     }
   }
 

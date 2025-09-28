@@ -1,9 +1,10 @@
 import React from 'react'
 import { useCart } from '../context/CartContext'
-import { FaRegTrashAlt } from 'react-icons/fa';
+import { FaRegTrashAlt, FaShieldAlt, FaTruck } from 'react-icons/fa';
 import { LuNotebookText } from 'react-icons/lu';
 import { MdDeliveryDining } from 'react-icons/md';
 import { GiShoppingBag } from 'react-icons/gi';
+import { BsLightning, BsHeadphones } from 'react-icons/bs';
 import { useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 import emptyCart from "../assets/empty-cart.png"
@@ -19,25 +20,52 @@ const Cart = ({location, getLocation}) => {
     <div className='mt-10 max-w-6xl mx-auto mb-5 px-4 md:px-0'>
       {
         cartItem.length > 0 ? <div>
-          <h1 className='font-bold text-2xl '>My Cart ({cartItem.length})</h1>
+          <div className='flex items-center gap-3 mb-6'>
+            <BsLightning className='text-blue-500 text-3xl'/>
+            <h1 className='font-bold text-2xl'>TechCart - My Cart ({cartItem.length})</h1>
+          </div>
+          
+          {/* Electronics Features Banner */}
+          <div className='bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-lg mb-6'>
+            <div className='flex flex-wrap items-center justify-around gap-4'>
+              <div className='flex items-center gap-2'>
+                <FaShieldAlt className='text-xl'/>
+                <span className='text-sm'>2 Year Warranty</span>
+              </div>
+              <div className='flex items-center gap-2'>
+                <FaTruck className='text-xl'/>
+                <span className='text-sm'>Free Tech Support</span>
+              </div>
+              <div className='flex items-center gap-2'>
+                <BsHeadphones className='text-xl'/>
+                <span className='text-sm'>24/7 Customer Care</span>
+              </div>
+              <div className='flex items-center gap-2'>
+                <BsLightning className='text-xl'/>
+                <span className='text-sm'>Fast Delivery</span>
+              </div>
+            </div>
+          </div>
           <div>
             <div className='mt-10'>
               {cartItem.map((item, index) => {
                 return <div key={index} className='bg-gray-100 p-5 rounded-md flex items-center justify-between mt-3 w-full'>
                   <div className='flex items-center gap-4'>
-                    <img src={item.image} alt={item.title} className='w-20 h-20 rounded-md' />
+                    <img src={item.image} alt={item.title} className='w-20 h-20 rounded-md object-cover' />
                     <div>
-                      <h1 className='md:w-[300px] line-clamp-2 '>{item.title}</h1>
-                      <p className='text-red-500 font-semibold text-lg'>${item.price}</p>
+                      <h1 className='md:w-[300px] line-clamp-2 font-semibold'>{item.title}</h1>
+                      <p className='text-sm text-gray-600 mb-1'>Brand: {item.brand}</p>
+                      <p className='text-blue-600 font-bold text-lg'>${item.price}</p>
+                      {item.category && <span className='bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full'>{item.category}</span>}
                     </div>
                   </div>
-                  <div className='bg-red-500 text-white flex gap-4 p-2 rounded-md font-bold text-xl'>
-                    <button onClick={()=>updateQuantity(cartItem, item.id, "decrease")} className='cursor-pointer'>-</button>
-                    <span>{item.quantity}</span>
-                    <button onClick={()=>updateQuantity(cartItem, item.id, "increase")} className='cursor-pointer'>+</button>
+                  <div className='bg-blue-500 text-white flex gap-4 p-2 rounded-md font-bold text-xl'>
+                    <button onClick={()=>updateQuantity(cartItem, item.id, "decrease")} className='cursor-pointer hover:bg-blue-600 px-2 rounded'>-</button>
+                    <span className='px-2'>{item.quantity}</span>
+                    <button onClick={()=>updateQuantity(cartItem, item.id, "increase")} className='cursor-pointer hover:bg-blue-600 px-2 rounded'>+</button>
                   </div>
-                  <span onClick={()=>deleteItem(item.id)} className='hover:bg-white/60 transition-all rounded-full p-3 hover:shadow-2xl'>
-                    <FaRegTrashAlt className='text-red-500 text-2xl cursor-pointer' />
+                  <span onClick={()=>deleteItem(item.id)} className='hover:bg-red-100 transition-all rounded-full p-3 hover:shadow-lg'>
+                    <FaRegTrashAlt className='text-red-500 text-xl cursor-pointer hover:text-red-600' />
                   </span>
                 </div>
               })}
@@ -73,12 +101,12 @@ const Cart = ({location, getLocation}) => {
                     <input type="text" placeholder='Enter your Number' className='p-2 rounded-md w-full' />
                   </div>
                 </div>
-                <button className='bg-red-500 text-white px-3 py-1 rounded-md mt-3 cursor-pointer'>Submit</button>
+                <button className='bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md mt-3 cursor-pointer transition-colors'>Submit</button>
                 <div className='flex items-center justify-center w-full text-gray-700'>
                   ---------OR-----------
                 </div>
                 <div className='flex justify-center'>
-                  <button onClick={getLocation} className='bg-red-500 text-white px-3 py-2 rounded-md'>Detect Location</button>
+                  <button onClick={getLocation} className='bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors'>Detect Location</button>
                 </div>
               </div>
               <div className='bg-white border border-gray-100 shadow-xl rounded-md p-7 mt-4 space-y-2 h-max'>
@@ -107,14 +135,18 @@ const Cart = ({location, getLocation}) => {
                     <button className='bg-white text-black border border-gray-200 px-4 cursor-pointer py-1 rounded-md'>Apply</button>
                   </div>
                 </div>
-                <button className='bg-red-500 text-white px-3 py-2 rounded-md w-full cursor-pointer mt-3'>Proceed to Checkout</button>
+                <button className='bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-4 py-3 rounded-md w-full cursor-pointer mt-3 font-semibold transition-all'>Proceed to Checkout</button>
               </div>
             </div>
           </div>
         </div> : <div className='flex flex-col gap-3 justify-center items-center h-[600px]'>
-          <h1 className='text-red-500/80 font-bold text-5xl text-muted'>Oh no! Your cart is empty</h1>
-          <img src={emptyCart} alt="" className='w-[400px]'/>
-          <button onClick={()=>navigate('/products')} className='bg-red-500 text-white px-3 py-2 rounded-md cursor-pointer '>Continue Shopping</button>
+          <div className='text-center'>
+            <BsLightning className='text-blue-500 text-6xl mx-auto mb-4'/>
+            <h1 className='text-blue-500/80 font-bold text-4xl mb-2'>Your TechCart is Empty!</h1>
+            <p className='text-gray-600 mb-6'>Discover amazing electronics and gadgets</p>
+          </div>
+          <img src={emptyCart} alt="" className='w-[300px]'/>
+          <button onClick={()=>navigate('/products')} className='bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-3 rounded-md cursor-pointer font-semibold transition-all'>Shop Electronics</button>
         </div>
       }
     </div>

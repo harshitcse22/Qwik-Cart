@@ -9,7 +9,7 @@ import notfound from "../assets/notfound.json"
 import MobileFilter from '../components/MobileFilter'
 
 const Products = () => {
-  const { data, fetchAllProducts } = getData()
+  const { data, fetchAllProducts, loading, error } = getData()
   const [search, setSearch] = useState("")
   const [category, setCategory] = useState("All")
   const [brand, setBrand] = useState("All")
@@ -54,7 +54,17 @@ const Products = () => {
       <div className='max-w-6xl mx-auto px-4 mb-10'>
         <MobileFilter openFilter={openFilter} setOpenFilter={setOpenFilter} search={search} setSearch={setSearch} brand={brand} setBrand={setBrand} priceRange={priceRange} setPriceRange={setPriceRange} category={category} setCategory={setCategory} handleCategoryChange={handleCategoryChange} handleBrandChange={handleBrandChange}/>
         {
-          data?.length > 0 ? (
+          loading ? (
+            <div className='flex items-center justify-center h-[400px]'>
+              <video muted autoPlay loop>
+                <source src={Loading} type='video/webm' />
+              </video>
+            </div>
+          ) : error ? (
+            <div className='flex justify-center items-center h-[400px]'>
+              <p className='text-red-500 text-xl'>Error: {error}</p>
+            </div>
+          ) : data?.length > 0 ? (
             <>
               <div className='flex gap-8'>
                 <FilterSection search={search} setSearch={setSearch} brand={brand} setBrand={setBrand} priceRange={priceRange} setPriceRange={setPriceRange} category={category} setCategory={setCategory} handleCategoryChange={handleCategoryChange} handleBrandChange={handleBrandChange} />
@@ -76,16 +86,11 @@ const Products = () => {
                     </div>
                   )
                 }
-
               </div>
-
-
             </>
           ) : (
-            <div className='flex items-center justify-center h-[400px]'>
-              <video muted autoPlay loop>
-                <source src={Loading} type='video/webm' />
-              </video>
+            <div className='flex justify-center items-center h-[400px]'>
+              <p className='text-gray-500 text-xl'>No products available</p>
             </div>
           )
         }
